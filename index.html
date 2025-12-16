@@ -43,6 +43,33 @@
             background-color: #f0f0f0;
             border-left: 4px solid #4CAF50;
         }
+
+                .feature-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .feature-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
+        }
+        
+        .feature-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
         .github-link {
             text-align: center;
             margin-top: 30px;
@@ -69,13 +96,11 @@
         
         <div class="features">
             <h2>Features</h2>
-            <ul>
-                <li>CSV Data Processing</li>
-                <li>Statistical Analysis</li>
-                <li>File Input/Output Operations</li>
-                <li>Exception Handling</li>
-                <li>User-Friendly Interface</li>
-            </ul>
+                <button class="feature-btn" onclick="alert('CSV Data Processing: Load and parse CSV files for analysis')">CSV Data Processing</button>
+                <button class="feature-btn" onclick="alert('Statistical Analysis: Perform mean, median, mode, and standard deviation calculations')">Statistical Analysis</button>
+                <button class="feature-btn" onclick="alert('File Input/Output Operations: Read from and write analysis results to files')">File Input/Output Operations</button>
+                <button class="feature-btn" onclick="alert('Exception Handling: Robust error handling for file operations')">Exception Handling</button>
+                <button class="feature-btn" onclick="alert('User-Friendly Interface: Interactive console-based interface')">User-Friendly Interface</button>            </ul>
         </div>
         
         <div class="github-link">
