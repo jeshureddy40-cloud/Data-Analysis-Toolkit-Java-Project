@@ -85,7 +85,51 @@
         .github-link a:hover {
             background-color: #444;
         }
-    </style>
+    
+    
+        /* Code Display Styles */
+        .code-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .code-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .close-btn {
+            float: right;
+            padding: 8px 16px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .close-btn:hover {
+            background-color: #c82333;
+        }
+        
+        .code-section pre {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .code-section code {
+            color: #f8f8f2;
+        }</style>
 </head>
 <body>
     <div class="container">
@@ -96,16 +140,66 @@
         
         <div class="features">
             <h2>Features</h2>
-                <button class="feature-btn" onclick="alert('CSV Data Processing: Load and parse CSV files for analysis')">CSV Data Processing</button>
-                <button class="feature-btn" onclick="alert('Statistical Analysis: Perform mean, median, mode, and standard deviation calculations')">Statistical Analysis</button>
-                <button class="feature-btn" onclick="alert('File Input/Output Operations: Read from and write analysis results to files')">File Input/Output Operations</button>
-                <button class="feature-btn" onclick="alert('Exception Handling: Robust error handling for file operations')">Exception Handling</button>
-                <button class="feature-btn" onclick="alert('User-Friendly Interface: Interactive console-based interface')">User-Friendly Interface</button>            </ul>
+                <button class="feature-btn" onclick="showCode('CSVDataset')">CSV Data Processing</button>
+                <button class="feature-btn" onclick="showCode('StatsProcessor')">Statistical Analysis</button>
+                <button class="feature-btn" onclick="showCode('FileOutput')">File Input/Output Operations</button>
+                <button class="feature-btn" onclick="showCode('DataException')">Exception Handling</button>
+                <button class="feature-btn" onclick="showCode('UserInput')">User-Friendly Interface</button>
         </div>
+
+                    <!-- Code Display Area -->
+            <div id="code-section" class="code-section" style="display:none;">
+                <h2 id="code-title"></h2>
+                <button class="close-btn" onclick="closeCode()">✕ Close</button>
+                <pre><code id="code-display"></code></pre>
+            </div>
         
         <div class="github-link">
             <a href="https://github.com/jeshureddy40-cloud/Data-Analysis-Toolkit-Java-Project" target="_blank">View on GitHub</a>
         </div>
     </div>
-</body>
+
+
+    <script>
+        // Code files mapping
+        const codeFiles = {
+            'CSVDataset': 'CSVDataset.java',
+            'StatsProcessor': 'StatsProcessor.java',
+            'FileOutput': 'FileOutput.java',
+            'DataException': 'DataException.java',
+            'UserInput': 'UserInput.java'
+        };
+        
+        const titles = {
+            'CSVDataset': 'CSV Data Processing - CSVDataset.java',
+            'StatsProcessor': 'Statistical Analysis - StatsProcessor.java',
+            'FileOutput': 'File Input/Output Operations - FileOutput.java',
+            'DataException': 'Exception Handling - DataException.java',
+            'UserInput': 'User-Friendly Interface - UserInput.java'
+        };
+        
+        async function showCode(fileName) {
+            const codeSection = document.getElementById('code-section');
+            const codeDisplay = document.getElementById('code-display');
+            const codeTitle = document.getElementById('code-title');
+            
+            // Show loading message
+            codeTitle.textContent = titles[fileName];
+            codeDisplay.textContent = 'Loading code...';
+            codeSection.style.display = 'block';
+            codeSection.scrollIntoView({ behavior: 'smooth' });
+            
+            try {
+                const response = await fetch(`https://raw.githubusercontent.com/jeshureddy40-cloud/Data-Analysis-Toolkit-Java-Project/master/src/${codeFiles[fileName]}`);
+                const code = await response.text();
+                codeDisplay.textContent = code;
+            } catch (error) {
+                codeDisplay.textContent = 'Error loading code. Please try again.';
+            }
+        }
+        
+        function closeCode() {
+            document.getElementById('code-section').style.display = 'none';
+        }
+    </script></body>
 </html>
