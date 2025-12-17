@@ -183,8 +183,7 @@
             const grossProfit = totalRevenue - totalCost;
             // Apply tax to profit (tax is on profit, not revenue)
             const taxAmount = grossProfit > 0 ? (grossProfit * taxRate / 100) : 0;
-            onst netResult = grossProfit - taxAmount;
-                        const profitMargin = totalRevenue > 0 ? ((netResult / totalRevenue) * 100) : 0;
+            const netResult = grossProfit - taxAmount;                        const profitMargin = totalRevenue > 0 ? ((netResult / totalRevenue) * 100) : 0;
             
             document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
             document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
