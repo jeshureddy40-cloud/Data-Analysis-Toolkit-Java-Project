@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit/Loss Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0 10px 0;
+            background: linear-gradient(135deg, #118DFF 0%, #12AAF5 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        .result-item {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: white;
+            border-left: 4px solid #118DFF;
+            border-radius: 4px;
+        }
+        .result-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .result-value {
+            float: right;
+            color: #118DFF;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .profit {
+            color: green;
+        }
+        .loss {
+            color: red;
+        }
+        .chart-container {
+            margin-top: 30px;
+            height: 300px;
+        }
+        .back-btn {
+            background: #6c757d;
+            margin-top: 10px;
+        }
+        .back-btn:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Profit/Loss Calculator</h1>
+        
+        <form id="calculatorForm">
+            <div class="input-group">
+                <label for="quantity">Number of Items:</label>
+                <input type="number" id="quantity" min="1" value="1" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="materialCost">Material Cost per Item ($):</label>
+                <input type="number" id="materialCost" step="0.01" min="0" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="expenditure">Other Expenditures per Item ($):</label>
+                <input type="number" id="expenditure" step="0.01" min="0" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="sellingPrice">Selling Price per Item ($):</label>
+                <input type="number" id="sellingPrice" step="0.01" min="0" required>
+            </div>
+            
+            <button type="submit">Calculate Profit/Loss</button>
+            <button type="button" class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
+        </form>
+        
+        <div class="results" id="results">
+            <h2>Results</h2>
+            <div class="result-item">
+                <span class="result-label">Total Cost:</span>
+                <span class="result-value" id="totalCost">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Total Revenue:</span>
+                <span class="result-value" id="totalRevenue">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Net Profit/Loss:</span>
+                <span class="result-value" id="netResult">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Profit Margin:</span>
+                <span class="result-value" id="profitMargin">0%</span>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="profitChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let myChart = null;
+        
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const quantity = parseFloat(document.getElementById('quantity').value);
+            const materialCost = parseFloat(document.getElementById('materialCost').value);
+            const expenditure = parseFloat(document.getElementById('expenditure').value);
+            const sellingPrice = parseFloat(document.getElementById('sellingPrice').value);
+            
+            const totalCostPerItem = materialCost + expenditure;
+            const totalCost = totalCostPerItem * quantity;
+            const totalRevenue = sellingPrice * quantity;
+            const netResult = totalRevenue - totalCost;
+            const profitMargin = totalRevenue > 0 ? ((netResult / totalRevenue) * 100) : 0;
+            
+            document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
+            document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+            document.getElementById('netResult').textContent = '$' + netResult.toFixed(2);
+            document.getElementById('netResult').className = 'result-value ' + (netResult >= 0 ? 'profit' : 'loss');
+            document.getElementById('profitMargin').textContent = profitMargin.toFixed(2) + '%';
+            
+            document.getElementById('results').style.display = 'block';
+            
+            if (myChart) {
+                myChart.destroy();
+            }
+            
+            const ctx = document.getElementById('profitChart').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total Cost', 'Total Revenue', 'Net Result'],
+                    datasets: [{
+                        label: 'Amount ($)',
+                        data: [totalCost, totalRevenue, Math.abs(netResult)],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            netResult >= 0 ? 'rgba(54, 162, 235, 0.6)' : 'rgba(255, 99, 132, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            netResult >= 0 ? 'rgba(54, 162, 235, 1)' : 'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Profit/Loss Analysis'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
