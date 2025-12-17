@@ -180,6 +180,7 @@
             const totalCost = totalCostPerItem * quantity;
             // Apply discount to selling price
             const discountedPrice = sellingPrice * (1 - discount / 100);
+                        const totalRevenue = discountedPrice * quantity;
             const grossProfit = totalRevenue - totalCost;
             // Apply tax to profit (tax is on profit, not revenue)
             const taxAmount = grossProfit > 0 ? (grossProfit * taxRate / 100) : 0;
