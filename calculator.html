@@ -123,6 +123,16 @@
                 <label for="sellingPrice">Selling Price per Item ($):</label>
                 <input type="number" id="sellingPrice" step="0.01" min="0" required>
             </div>
+
+                        <div class="input-group">
+                <label for="discount">Discount/Markdown (%):</label>
+                <input type="number" id="discount" step="0.01" min="0" max="100" value="0">
+            </div>
+
+                        <div class="input-group">
+                <label for="taxRate">Tax/GST Rate (%):</label>
+                <input type="number" id="taxRate" step="0.01" min="0" max="100" value="0">
+            </div>
             
             <button type="submit">Calculate Profit/Loss</button>
             <button type="button" class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
@@ -163,12 +173,18 @@
             const materialCost = parseFloat(document.getElementById('materialCost').value);
             const expenditure = parseFloat(document.getElementById('expenditure').value);
             const sellingPrice = parseFloat(document.getElementById('sellingPrice').value);
+                        const discount = parseFloat(document.getElementById('discount').value);
+            const taxRate = parseFloat(document.getElementById('taxRate').value);
             
             const totalCostPerItem = materialCost + expenditure;
             const totalCost = totalCostPerItem * quantity;
-            const totalRevenue = sellingPrice * quantity;
-            const netResult = totalRevenue - totalCost;
-            const profitMargin = totalRevenue > 0 ? ((netResult / totalRevenue) * 100) : 0;
+            // Apply discount to selling price
+            const discountedPrice = sellingPrice * (1 - discount / 100);
+            const grossProfit = totalRevenue - totalCost;
+            // Apply tax to profit (tax is on profit, not revenue)
+            const taxAmount = grossProfit > 0 ? (grossProfit * taxRate / 100) : 0;
+            onst netResult = grossProfit - taxAmount;
+                        const profitMargin = totalRevenue > 0 ? ((netResult / totalRevenue) * 100) : 0;
             
             document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
             document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
